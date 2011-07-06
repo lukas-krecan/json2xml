@@ -63,3 +63,14 @@ Otherwise it's possible to use `net.javacrumbs.json2xml.JsonXmlReader` together 
 	Result result = ...;
 	transformer.transform(new SAXSource(new JsonXmlReader(),source), result);
 	
+Maven
+-----
+To use it with Maven, just add this dependency
+
+	<dependency>
+		<groupId>net.javacrumbs</groupId>
+		<artifactId>json-xml</artifactId>
+		<version>1.0</version>
+	</dependency>
+
+	
