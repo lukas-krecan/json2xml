@@ -32,7 +32,10 @@ import org.xml.sax.XMLReader;
 /**
  * Helper class that can be used for JSON -> XML transformation.
  * <pre>
- * TransformerFactory.newInstance().newTransformer().transform(new SAXSource(new JsonXmlReader(),new InputSource(new StringReader(json))), new StreamResult(out));
+ *	Transformer transformer = TransformerFactory.newInstance().newTransformer();
+ *	InputSource source = new InputSource(...);
+ *	Result result = ...;
+ *	transformer.transform(new SAXSource(new JsonXmlReader(namespace),source), result);
  * </pre>
  */
 public class JsonXmlReader implements XMLReader {

@@ -34,7 +34,24 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Converts JSON to SAX events.
+ * Converts JSON to SAX events. It can be used either directly
+ *  <pre>
+ *  <code>
+ *	ContentHandler ch = ...;
+ *	JsonSaxAdapter adapter = new JsonSaxAdapter(JsonSaxAdapterTest.JSON, ch);
+ *	adapter.parse();
+ *  </code>
+ *  </pre>
+ *  
+ *  or using {@link JsonXmlReader}
+ *  <pre>  
+ *  <code>
+ *	Transformer transformer = TransformerFactory.newInstance().newTransformer();
+ *	InputSource source = new InputSource(...);
+ *	Result result = ...;
+ *	transformer.transform(new SAXSource(new JsonXmlReader(),source), result);
+ *  </code>
+ *  </pre>
  */
 public class JsonSaxAdapter {
 

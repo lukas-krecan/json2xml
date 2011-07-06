@@ -21,6 +21,8 @@ import static org.mockito.Mockito.mock;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
@@ -36,7 +38,7 @@ import org.xml.sax.InputSource;
 
 public class JsonSaxAdapterTest {
 
-    private static final String JSON = "{\"document\":{\"a\":1,\"b\":2,\"c\":{\"d\":\"text\"},\"e\":[1,2,3],\"f\":[[1,2,3],[4,5,6]], \"g\":null}}";
+    public static final String JSON = "{\"document\":{\"a\":1,\"b\":2,\"c\":{\"d\":\"text\"},\"e\":[1,2,3],\"f\":[[1,2,3],[4,5,6]], \"g\":null}}";
 
     private static final String XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
     "<document>\n" +
@@ -97,7 +99,10 @@ public class JsonSaxAdapterTest {
     }
     public static String convertToXml(final String json, final String namespace) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        TransformerFactory.newInstance().newTransformer().transform(new SAXSource(new JsonXmlReader(namespace),new InputSource(new StringReader(json))), new StreamResult(out));
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		InputSource source = new InputSource(new StringReader(json));
+		Result result = new StreamResult(out);
+		transformer.transform(new SAXSource(new JsonXmlReader(namespace),source), result);
         return new String(out.toByteArray());
     }
 }
