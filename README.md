@@ -53,7 +53,7 @@ Usage
 If you have SAX content handler, you can use `net.javacrumbs.json2xml.JsonSaxAdapter` class directly.
 
 	ContentHandler ch = ...;
-	JsonSaxAdapter adapter = new JsonSaxAdapter(JsonSaxAdapterTest.JSON, ch);
+	JsonSaxAdapter adapter = new JsonSaxAdapter(json, ch);
 	adapter.parse();
 	
 Otherwise it's possible to use `net.javacrumbs.json2xml.JsonXmlReader` together with standard Java transformation.
