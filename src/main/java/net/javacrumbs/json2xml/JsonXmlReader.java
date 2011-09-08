@@ -70,8 +70,7 @@ public class JsonXmlReader implements XMLReader {
     }
 
     public void setEntityResolver(EntityResolver resolver) {
-        throw new UnsupportedOperationException();
-
+    	 //ignore
     }
 
     public EntityResolver getEntityResolver() {
@@ -95,7 +94,7 @@ public class JsonXmlReader implements XMLReader {
     }
 
     public void setErrorHandler(ErrorHandler handler) {
-        throw new UnsupportedOperationException();
+    	 //ignore
 
     }
 
