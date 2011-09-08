@@ -79,8 +79,7 @@ public class JsonXmlReader implements XMLReader {
     }
 
     public void setDTDHandler(DTDHandler handler) {
-        throw new UnsupportedOperationException();
-
+        //ignore
     }
 
     public DTDHandler getDTDHandler() {
