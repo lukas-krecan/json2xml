@@ -53,9 +53,9 @@
 	</build>
 	
 	<scm>
-   	  <connection>scm:git:git@github.com:dart0/json2xml.git</connection>
-	  <developerConnection>scm:git:git@github.com:dart0/json2xml.git</developerConnection>
-      <url>scm:git:git@github.com:dart0/json2xml.git</url>
+   	  <connection>scm:git:git@github.com:lukas-krecan/json2xml.git</connection>
+	  <developerConnection>scm:git:git@github.com:lukas-krecan/json2xml.git</developerConnection>
+      <url>scm:git:git@github.com:lukas-krecan/json2xml.git</url>
 	</scm>
 	
 	<developers>
