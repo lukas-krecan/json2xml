@@ -73,4 +73,42 @@ To use it with Maven, just add this dependency
 		<version>1.0</version>
 	</dependency>
 
+Type attributes
+---------------
+Since XML does not have any mechanism to reflect JSON type information, there is a new feature since json2xml version 1.2. You can switch on the `addTypeAttributes` flag using a 
+constructor argument. Then you will get the type information in XML attributes like this:
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<document xmlns="http://javacrumbs.net/test">
+		<a type="int">1</a>
+		<b type="int">2</b>
+		<c>
+			<d type="string">text</d>
+		</c>
+		<e type="array">
+			<e type="int">1</e>
+			<e type="int">2</e>
+			<e type="int">3</e>
+		</e>
+		<f type="array">
+			<f type="array">
+				<f type="int">1</f>
+				<f type="int">2</f>
+				<f type="int">3</f>
+			</f>
+			<f type="array">
+				<f type="int">4</f>
+				<f type="int">5</f>
+				<f type="int">6</f>
+			</f>
+		</f>
+		<g type="null" />
+	</document>
+
+
+
+
+
+
+
 	
