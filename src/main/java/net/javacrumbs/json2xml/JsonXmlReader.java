@@ -42,6 +42,7 @@ public class JsonXmlReader implements XMLReader {
 
     private ContentHandler contentHandler;
     private final String namespaceUri;
+    private final boolean addTypeAttributes;
 
 
     public JsonXmlReader() {
@@ -49,10 +50,15 @@ public class JsonXmlReader implements XMLReader {
     }
 
     public JsonXmlReader(String namespaceUri) {
-        this.namespaceUri = namespaceUri;
+    	this(namespaceUri, false);
     }
 
-    public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
+    public JsonXmlReader(String namespaceUri, boolean addTypeAttributes) {
+    	this.namespaceUri = namespaceUri;
+		this.addTypeAttributes = addTypeAttributes;
+	}
+
+	public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         throw new UnsupportedOperationException();
     }
 
@@ -105,7 +111,7 @@ public class JsonXmlReader implements XMLReader {
 
     public void parse(InputSource input) throws IOException, SAXException {
         JsonParser jsonParser = new JsonFactory().createJsonParser(input.getCharacterStream());
-        new JsonSaxAdapter(jsonParser, contentHandler, namespaceUri).parse();
+        new JsonSaxAdapter(jsonParser, contentHandler, namespaceUri, addTypeAttributes).parse();
 
     }
 

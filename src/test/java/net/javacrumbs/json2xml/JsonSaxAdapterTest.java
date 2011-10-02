@@ -66,6 +66,34 @@ public class JsonSaxAdapterTest {
     "	</f>\n" +
     "   <g/>\n" +
     "</document>\n";
+    
+    private static final String XML_WITH_TYPES = "" +
+    		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+    		"<document xmlns=\"http://javacrumbs.net/test\">\n" + 
+    		"	<a type=\"int\">1</a>\n" + 
+    		"	<b type=\"int\">2</b>\n" + 
+    		"	<c>\n" + 
+    		"		<d type=\"string\">text</d>\n" + 
+    		"	</c>\n" + 
+    		"	<e type=\"array\">\n" + 
+    		"		<e type=\"int\">1</e>\n" + 
+    		"		<e type=\"int\">2</e>\n" + 
+    		"		<e type=\"int\">3</e>\n" + 
+    		"	</e>\n" + 
+    		"	<f type=\"array\">\n" + 
+    		"		<f type=\"array\">\n" + 
+    		"			<f type=\"int\">1</f>\n" + 
+    		"			<f type=\"int\">2</f>\n" + 
+    		"			<f type=\"int\">3</f>\n" + 
+    		"		</f>\n" + 
+    		"		<f type=\"array\">\n" + 
+    		"			<f type=\"int\">4</f>\n" + 
+    		"			<f type=\"int\">5</f>\n" + 
+    		"			<f type=\"int\">6</f>\n" + 
+    		"		</f>\n" + 
+    		"	</f>\n" + 
+    		"	<g type=\"null\" />\n" + 
+    		"</document>";
 
     @Test
     public void testParse() throws Exception
@@ -85,6 +113,15 @@ public class JsonSaxAdapterTest {
         Diff diff = XMLUnit.compareXML(xmlWithNamespace, xml);
         assertTrue(diff.toString(), diff.similar());
     }
+    @Test
+    public void testParseNamespaceWithAttributes() throws Exception
+    {
+    	String xml = convertToXml(JSON, "http://javacrumbs.net/test", true);
+    	System.out.println(xml);
+    	XMLUnit.setIgnoreWhitespace(true);
+    	Diff diff = XMLUnit.compareXML(XML_WITH_TYPES, xml);
+    	assertTrue(diff.toString(), diff.similar());
+    }
 
     @Test(expected=ParserException.class)
     public void testMultipleRoots() throws Exception
@@ -98,11 +135,14 @@ public class JsonSaxAdapterTest {
         return convertToXml(json, "");
     }
     public static String convertToXml(final String json, final String namespace) throws Exception {
+    	return convertToXml(json, namespace, false);
+    }
+    public static String convertToXml(final String json, final String namespace, final boolean addTypeAttributes) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		InputSource source = new InputSource(new StringReader(json));
 		Result result = new StreamResult(out);
-		transformer.transform(new SAXSource(new JsonXmlReader(namespace),source), result);
+		transformer.transform(new SAXSource(new JsonXmlReader(namespace, addTypeAttributes),source), result);
         return new String(out.toByteArray());
     }
 }

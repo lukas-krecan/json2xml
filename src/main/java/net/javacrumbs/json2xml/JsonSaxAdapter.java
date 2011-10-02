@@ -28,6 +28,7 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -62,6 +63,8 @@ public class JsonSaxAdapter {
     private final ContentHandler contentHandler;
 
     private final String namespaceUri;
+    
+    private final boolean addTypeAttributes;
 
     private static final JsonFactory JSON_FACTORY = new JsonFactory();
 
@@ -74,10 +77,16 @@ public class JsonSaxAdapter {
     public JsonSaxAdapter(final JsonParser jsonParser, final ContentHandler contentHandler) {
         this(jsonParser, contentHandler, "");
     }
+    
     public JsonSaxAdapter(final JsonParser jsonParser, final ContentHandler contentHandler, final String namespaceUri) {
+    	this(jsonParser, contentHandler, namespaceUri, false);
+    }
+    
+    public JsonSaxAdapter(final JsonParser jsonParser, final ContentHandler contentHandler, final String namespaceUri, final boolean addTypeAttributes) {
         this.jsonParser = jsonParser;
         this.contentHandler = contentHandler;
         this.namespaceUri = namespaceUri;
+        this.addTypeAttributes = addTypeAttributes;
         contentHandler.setDocumentLocator(new DocumentLocator());
     }
 
@@ -176,10 +185,48 @@ public class JsonSaxAdapter {
 
 
     private void startElement(final String elementName) throws SAXException {
-        contentHandler.startElement(namespaceUri, elementName, elementName, EMPTY_ATTRIBUTES);
+        contentHandler.startElement(namespaceUri, elementName, elementName, getTypeAttributes());
+    }
+    
+    
+    protected Attributes getTypeAttributes() {
+    	if (addTypeAttributes)
+    	{
+			String currentTokenType = getCurrentTokenType();
+			if (currentTokenType!=null)
+			{
+				AttributesImpl attributes = new AttributesImpl();
+				attributes.addAttribute("", "type", "type", "string", currentTokenType);
+				return attributes;
+			}
+			else
+			{
+				return EMPTY_ATTRIBUTES; 
+			}
+    	}
+    	else
+    	{
+    		return EMPTY_ATTRIBUTES;
+    	}
+	}
+    
+    
+    protected String getCurrentTokenType() {
+        switch (jsonParser.getCurrentToken())
+        {
+	        case VALUE_NUMBER_INT: return "int";
+	        case VALUE_NUMBER_FLOAT: return "float";
+	        case VALUE_FALSE: return "boolean";
+	        case VALUE_TRUE: return "boolean";
+	        case VALUE_STRING: return "string";
+	        case VALUE_NULL: return "null";
+	        case START_ARRAY: return "array";
+	        default: return null;
+        }
     }
 
-    private void endElement(final String elementName) throws SAXException {
+
+	private void endElement(final String elementName) throws SAXException {
         contentHandler.endElement(namespaceUri, elementName, elementName);
     }
 
