@@ -70,7 +70,7 @@ To use it with Maven, just add this dependency
 	<dependency>
 		<groupId>net.javacrumbs</groupId>
 		<artifactId>json-xml</artifactId>
-		<version>1.0</version>
+		<version>1.3</version>
 	</dependency>
 
 Type attributes
