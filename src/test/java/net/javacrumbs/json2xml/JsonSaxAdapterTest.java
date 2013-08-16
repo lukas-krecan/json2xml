@@ -103,6 +103,7 @@ public class JsonSaxAdapterTest {
         Diff diff = XMLUnit.compareXML(XML, xml);
         assertTrue(diff.toString(), diff.similar());
     }
+ 
     @Test
     public void testParseNamespace() throws Exception
     {
