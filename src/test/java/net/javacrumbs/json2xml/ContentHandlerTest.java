@@ -16,12 +16,12 @@
 
 package net.javacrumbs.json2xml;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 public class ContentHandlerTest {
 

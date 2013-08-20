@@ -15,25 +15,23 @@
  */
 package net.javacrumbs.json2xml;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
+import net.javacrumbs.json2xml.JsonSaxAdapter.ParserException;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 
-import net.javacrumbs.json2xml.JsonSaxAdapter.ParserException;
-
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Test;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 
 public class JsonSaxAdapterTest {
