@@ -70,7 +70,7 @@ To use it with Maven, just add this dependency
 	<dependency>
 		<groupId>net.javacrumbs</groupId>
 		<artifactId>json-xml</artifactId>
-		<version>2.0</version><!-- for Jackson >= 2.0 -->
+		<version>2.1</version><!-- for Jackson >= 2.1 -->
 		<!--<version>1.3</version>--><!-- for Jackson < 2.0 -->
 	</dependency>
 
@@ -105,6 +105,22 @@ constructor argument. Then you will get the type information in XML attributes l
 		</f>
 		<g type="null" />
 	</document>
+	
+Atrificial root
+---------------
+XML support only one root element but JSON documents may have multiple roots. To overcome this mismatch,
+you can specify `artificialRootName` which will generate artificial XML root with given name. So
+document
+
+    {"a":1, "b":2}
+    
+can be transformed to
+    
+    <artificialRoot>
+      <a>1</a>
+      <b>2</b>
+    </artificialRoot>
+
 
 
 
