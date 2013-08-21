@@ -43,20 +43,45 @@ public class JsonXmlReader implements XMLReader {
     private ContentHandler contentHandler;
     private final String namespaceUri;
     private final boolean addTypeAttributes;
+    private final String artificialRootName;
 
 
+    /**
+     * Creates JsonXmlReader
+     */
     public JsonXmlReader() {
         this("");
     }
 
+    /**
+     * Creates JsonXmlReader
+     * @param namespaceUri namespace uri of the resulting XML.
+     */
     public JsonXmlReader(String namespaceUri) {
     	this(namespaceUri, false);
     }
 
+    /**
+     * Creates JsonXmlReader
+     * @param namespaceUri namespace uri of the resulting XML.
+     * @param addTypeAttributes if true adds attributes with type info
+     */
     public JsonXmlReader(String namespaceUri, boolean addTypeAttributes) {
+    	this(namespaceUri, addTypeAttributes, null);
+	}
+
+    /**
+     * Creates JsonXmlReader
+     * @param namespaceUri namespace uri of the resulting XML.
+     * @param addTypeAttributes if true adds attributes with type info
+     * @param artificialRootName if set, an artificial root is generated so JSON documents with more roots can be handeled.
+     */
+    public JsonXmlReader(String namespaceUri, boolean addTypeAttributes, String artificialRootName) {
     	this.namespaceUri = namespaceUri;
 		this.addTypeAttributes = addTypeAttributes;
+        this.artificialRootName = artificialRootName;
 	}
+
 
 	public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         throw new UnsupportedOperationException();
@@ -110,9 +135,8 @@ public class JsonXmlReader implements XMLReader {
 
 
     public void parse(InputSource input) throws IOException, SAXException {
-        JsonParser jsonParser = new JsonFactory().createJsonParser(input.getCharacterStream());
-        new JsonSaxAdapter(jsonParser, contentHandler, namespaceUri, addTypeAttributes).parse();
-
+        JsonParser jsonParser = new JsonFactory().createParser(input.getCharacterStream());
+        new JsonSaxAdapter(jsonParser, contentHandler, namespaceUri, addTypeAttributes, artificialRootName).parse();
     }
 
     public void parse(String systemId) throws IOException, SAXException {
@@ -122,6 +146,4 @@ public class JsonXmlReader implements XMLReader {
     public  String getNamespaceUri() {
         return namespaceUri;
     }
-
-
 }
