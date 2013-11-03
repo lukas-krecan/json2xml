@@ -44,6 +44,7 @@ public class JsonXmlReader implements XMLReader {
     private final String namespaceUri;
     private final boolean addTypeAttributes;
     private final String artificialRootName;
+    private final ElementNameConverter elementNameConverter;
 
 
     /**
@@ -77,9 +78,21 @@ public class JsonXmlReader implements XMLReader {
      * @param artificialRootName if set, an artificial root is generated so JSON documents with more roots can be handeled.
      */
     public JsonXmlReader(String namespaceUri, boolean addTypeAttributes, String artificialRootName) {
+    	this(namespaceUri, addTypeAttributes, artificialRootName, null);
+	}
+
+    /**
+     * Creates JsonXmlReader
+     * @param namespaceUri namespace uri of the resulting XML.
+     * @param addTypeAttributes if true adds attributes with type info
+     * @param artificialRootName if set, an artificial root is generated so JSON documents with more roots can be handeled.
+     * @param elementNameConverter converter to convert JSON object names to valid XML element names
+     */
+    public JsonXmlReader(String namespaceUri, boolean addTypeAttributes, String artificialRootName, ElementNameConverter elementNameConverter) {
     	this.namespaceUri = namespaceUri;
 		this.addTypeAttributes = addTypeAttributes;
         this.artificialRootName = artificialRootName;
+        this.elementNameConverter = elementNameConverter;
 	}
 
 
@@ -136,7 +149,7 @@ public class JsonXmlReader implements XMLReader {
 
     public void parse(InputSource input) throws IOException, SAXException {
         JsonParser jsonParser = new JsonFactory().createParser(input.getCharacterStream());
-        new JsonSaxAdapter(jsonParser, contentHandler, namespaceUri, addTypeAttributes, artificialRootName).parse();
+        new JsonSaxAdapter(jsonParser, contentHandler, namespaceUri, addTypeAttributes, artificialRootName, elementNameConverter).parse();
     }
 
     public void parse(String systemId) throws IOException, SAXException {

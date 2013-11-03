@@ -113,7 +113,7 @@ public class JsonSaxAdapterTest {
 
     @Test
     public void testParseArray() throws Exception {
-        String xml = convertToXml("[{\"name\":\"smith\"},{\"skill\":\"java\"}]", null, false, "elem");
+        String xml = convertToXml("[{\"name\":\"smith\"},{\"skill\":\"java\"}]", new JsonXmlReader(null, false, "elem"));
         XMLUnit.setIgnoreWhitespace(true);
         Diff diff = XMLUnit.compareXML("<elem><name>smith</name><skill>java</skill></elem>", xml);
         assertTrue(diff.toString(), diff.similar());
@@ -121,7 +121,7 @@ public class JsonSaxAdapterTest {
 
     @Test
     public void testParseSimple() throws Exception {
-        String xml = convertToXml("1", null, false, "elem");
+        String xml = convertToXml("1", new JsonXmlReader(null, false, "elem"));
         XMLUnit.setIgnoreWhitespace(true);
         Diff diff = XMLUnit.compareXML("<elem>1</elem>", xml);
         assertTrue(diff.toString(), diff.similar());
@@ -136,7 +136,7 @@ public class JsonSaxAdapterTest {
 
     @Test
     public void testParseNamespace() throws Exception {
-        String xml = convertToXml(JSON, "http://javacrumbs.net/test");
+        String xml = convertToXml(JSON, new JsonXmlReader("http://javacrumbs.net/test"));
         System.out.println(xml);
         XMLUnit.setIgnoreWhitespace(true);
         String xmlWithNamespace = XML.replace("<document>", "<document xmlns=\"http://javacrumbs.net/test\">");
@@ -146,7 +146,7 @@ public class JsonSaxAdapterTest {
 
     @Test
     public void testParseNamespaceWithAttributes() throws Exception {
-        String xml = convertToXml(JSON, "http://javacrumbs.net/test", true);
+        String xml = convertToXml(JSON, new JsonXmlReader("http://javacrumbs.net/test", true));
         System.out.println(xml);
         XMLUnit.setIgnoreWhitespace(true);
         Diff diff = XMLUnit.compareXML(XML_WITH_TYPES, xml);
@@ -155,7 +155,7 @@ public class JsonSaxAdapterTest {
 
     @Test
     public void testParseMultipleRootsArtificialRoot() throws Exception {
-        String xml = convertToXml("{\"a\":1, \"b\":2}", null, false, "artificialRoot");
+        String xml = convertToXml("{\"a\":1, \"b\":2}", new JsonXmlReader(null, false, "artificialRoot"));
         XMLUnit.setIgnoreWhitespace(true);
         Diff diff = XMLUnit.compareXML("<artificialRoot><a>1</a><b>2</b></artificialRoot>", xml);
         assertTrue(diff.toString(), diff.similar());
@@ -163,7 +163,7 @@ public class JsonSaxAdapterTest {
 
     @Test
     public void testParseMultipleRootsArtificialRootWithNamespace() throws Exception {
-        String xml = convertToXml("{\"a\":1, \"b\":2}", "http://javacrumbs.net/test", false, "artificialRoot");
+        String xml = convertToXml("{\"a\":1, \"b\":2}", new JsonXmlReader("http://javacrumbs.net/test", false, "artificialRoot"));
         XMLUnit.setIgnoreWhitespace(true);
         Diff diff = XMLUnit.compareXML("<artificialRoot xmlns=\"http://javacrumbs.net/test\"><a>1</a><b>2</b></artificialRoot>", xml);
         assertTrue(diff.toString(), diff.similar());
@@ -176,24 +176,30 @@ public class JsonSaxAdapterTest {
         adapter.parse();
     }
 
+    @Test
+    public void testParseInvalidName() throws Exception {
+        String xml = convertToXml("{\"@bum\":1}", new JsonXmlReader("", false, null, new ElementNameConverter() {
+            public String convertName(String name) {
+                return name.replaceAll("@","_");
+            }
+        }));
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff diff = XMLUnit.compareXML("<_bum>1</_bum>", xml);
+        assertTrue(diff.toString(), diff.similar());
+    }
+
+
     public static String convertToXml(final String json) throws Exception {
-        return convertToXml(json, "");
+        return convertToXml(json, new JsonXmlReader());
     }
 
-    public static String convertToXml(final String json, final String namespace) throws Exception {
-        return convertToXml(json, namespace, false);
-    }
 
-    public static String convertToXml(final String json, final String namespace, final boolean addTypeAttributes) throws Exception {
-        return convertToXml(json, namespace, addTypeAttributes, null);
-    }
-
-    public static String convertToXml(final String json, final String namespace, final boolean addTypeAttributes, final String artificalRootName) throws Exception {
+    public static String convertToXml(final String json, final JsonXmlReader reader) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         InputSource source = new InputSource(new StringReader(json));
         Result result = new StreamResult(out);
-        transformer.transform(new SAXSource(new JsonXmlReader(namespace, addTypeAttributes, artificalRootName), source), result);
+        transformer.transform(new SAXSource(reader, source), result);
         return new String(out.toByteArray());
     }
 
