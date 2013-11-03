@@ -19,12 +19,14 @@ import net.javacrumbs.json2xml.JsonSaxAdapter.ParserException;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
+import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayOutputStream;
@@ -36,7 +38,7 @@ import static org.mockito.Mockito.mock;
 
 public class JsonSaxAdapterTest {
 
-    public static final String JSON = "{\"document\":{\"a\":1,\"b\":2,\"c\":{\"d\":\"text\"},\"e\":[1,2,3],\"f\":[[1,2,3],[4,5,6]], \"g\":null}}";
+    public static final String JSON = "{\"document\":{\"a\":1,\"b\":2,\"c\":{\"d\":\"text\"},\"e\":[1,2,3],\"f\":[[1,2,3],[4,5,6]], \"g\":null, \"h\":[{\"i\":true,\"j\":false}]}}";
 
     private static final String XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<document>\n" +
@@ -63,6 +65,10 @@ public class JsonSaxAdapterTest {
             "		</f>\n" +
             "	</f>\n" +
             "   <g/>\n" +
+            "   <h>\n" +
+            "       <i>true</i>\n" +
+            "       <j>false</j>\n" +
+            "   </h>\n" +
             "</document>\n";
 
     private static final String XML_WITH_TYPES = "" +
@@ -91,6 +97,10 @@ public class JsonSaxAdapterTest {
             "		</f>\n" +
             "	</f>\n" +
             "	<g type=\"null\" />\n" +
+            "   <h type=\"array\">\n" +
+            "       <i type=\"boolean\">true</i>\n" +
+            "       <j type=\"boolean\">false</j>\n" +
+            "   </h>\n" +
             "</document>";
 
     @Test
@@ -99,6 +109,29 @@ public class JsonSaxAdapterTest {
         XMLUnit.setIgnoreWhitespace(true);
         Diff diff = XMLUnit.compareXML(XML, xml);
         assertTrue(diff.toString(), diff.similar());
+    }
+
+    @Test
+    public void testParseArray() throws Exception {
+        String xml = convertToXml("[{\"name\":\"smith\"},{\"skill\":\"java\"}]", null, false, "elem");
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff diff = XMLUnit.compareXML("<elem><name>smith</name><skill>java</skill></elem>", xml);
+        assertTrue(diff.toString(), diff.similar());
+    }
+
+    @Test
+    public void testParseSimple() throws Exception {
+        String xml = convertToXml("1", null, false, "elem");
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff diff = XMLUnit.compareXML("<elem>1</elem>", xml);
+        assertTrue(diff.toString(), diff.similar());
+    }
+
+    @Test(expected = ParserException.class)
+    public void testParseSimpleNoRoot() throws Exception {
+        ContentHandler contentHandler = mock(ContentHandler.class);
+        JsonSaxAdapter adapter = new JsonSaxAdapter("1", contentHandler);
+        adapter.parse();
     }
 
     @Test
@@ -143,7 +176,6 @@ public class JsonSaxAdapterTest {
         adapter.parse();
     }
 
-
     public static String convertToXml(final String json) throws Exception {
         return convertToXml(json, "");
     }
@@ -163,5 +195,13 @@ public class JsonSaxAdapterTest {
         Result result = new StreamResult(out);
         transformer.transform(new SAXSource(new JsonXmlReader(namespace, addTypeAttributes, artificalRootName), source), result);
         return new String(out.toByteArray());
+    }
+
+    public static Node convertToDom(final String json, final String namespace, final boolean addTypeAttributes, final String artificalRootName) throws Exception {
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        InputSource source = new InputSource(new StringReader(json));
+        DOMResult result = new DOMResult();
+        transformer.transform(new SAXSource(new JsonXmlReader(namespace, addTypeAttributes, artificalRootName), source), result);
+        return result.getNode();
     }
 }
