@@ -146,12 +146,15 @@ public class JsonSaxAdapter {
             contentHandler.startDocument();
             if (shouldAddArtificialRoot()) {
                 startElement(artificialRootName);
-            }
-            int elementsWritten = parseObject();
-            if (shouldAddArtificialRoot()) {
+                parseElement(artificialRootName, false);
                 endElement(artificialRootName);
-            } else if (elementsWritten > 1) {
-                throw new ParserException("More than one root element. Can not generate legal XML. You can set artificialRootName to generate an artificial root.");
+            } else if (START_OBJECT.equals(jsonParser.getCurrentToken())) {
+                int elementsWritten = parseObject();
+                if (elementsWritten>1) {
+                    throw new ParserException("More than one root element. Can not generate legal XML. You can set artificialRootName to generate an artificial root.");
+                }
+            } else {
+                throw new ParserException("Unsupported root element. Can not generate legal XML. You can set artificialRootName to generate an artificial root.");
             }
             contentHandler.endDocument();
         } catch (Exception e) {
@@ -178,7 +181,9 @@ public class JsonSaxAdapter {
                 String elementName = jsonParser.getCurrentName();
                 //jump to element value
                 jsonParser.nextToken();
-                parseElement(elementName);
+                startElement(elementName);
+                parseElement(elementName, false);
+                endElement(elementName);
                 elementsWritten++;
             } else {
                 throw new ParserException("Error when parsing. Expected field name got " + jsonParser.getCurrentToken());
@@ -187,24 +192,38 @@ public class JsonSaxAdapter {
         return elementsWritten;
     }
 
-    private void parseElement(final String elementName) throws Exception {
-        startElement(elementName);
+    /**
+     * Pares JSON element.
+     * @param elementName
+     * @param inArray if the element is in an array
+     * @throws Exception
+     */
+    private void parseElement(final String elementName, final boolean inArray) throws Exception {
         JsonToken currentToken = jsonParser.getCurrentToken();
         if (START_OBJECT.equals(currentToken)) {
             parseObject();
         } else if (START_ARRAY.equals(currentToken)) {
-            parseArray(elementName);
+            if (inArray) {
+                startElement(elementName);
+                parseArray(elementName);
+                endElement(elementName);
+            } else {
+                parseArray(elementName);
+            }
         } else if (currentToken.isScalarValue()) {
-            parseValue();
+            if (inArray) {
+                startElement(elementName);
+                parseValue();
+                endElement(elementName);
+            } else {
+                parseValue();
+            }
         }
-
-        endElement(elementName);
     }
 
     private void parseArray(final String elementName) throws Exception {
-
         while (jsonParser.nextToken() != END_ARRAY && jsonParser.getCurrentToken() != null) {
-            parseElement(elementName);
+            parseElement(elementName, true);
         }
     }
 
