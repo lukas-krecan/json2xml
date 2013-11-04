@@ -125,12 +125,12 @@ constructor argument. Then you will get the type information in XML attributes l
 Atrificial root
 ---------------
 XML support only one root element but JSON documents may have multiple roots. To overcome this mismatch,
-you can specify `artificialRootName` which will generate artificial XML root with given name. So
-document
+you can specify `artificialRootName` which will generate artificial XML root with given name.
+`new JsonXmlReader(null, false, "artificialRoot")` will transform
 
     {"a":1, "b":2}
     
-can be transformed to
+to
     
     <artificialRoot>
       <a>1</a>
@@ -138,11 +138,6 @@ can be transformed to
     </artificialRoot>
 
 
-Artificial root element name
-----------------------------
-If you have JSON with more or zero root elements, it is not possible to represent it in XML. You can specify artificial root name
-using constructor parameter. For example `new JsonXmlReader(null, false, "elem")` will convert  `[{"name":"smith"},{"skill":"java"}]`
-to `<elem><name>smith</name><skill>java</skill></elem>`
 
 Name transformation
 -------------------
