@@ -40,7 +40,7 @@ import static org.mockito.Mockito.mock;
 public class JsonSaxAdapterTest {
 
     public static final String JSON = "{\"document\":{\"a\":1,\"b\":2,\"c\":{\"d\":\"text\"},\"e\":[1,2,3],\"f\":[[1,2,3],[4,5,6]], \"g\":null, " +
-            "\"h\":[{\"i\":true,\"j\":false}],\"k\":[[{\"l\":1,\"m\":2}],[{\"n\":3,\"o\":4}]]}}";
+            "\"h\":[{\"i\":true,\"j\":false}],\"k\":[[{\"l\":1,\"m\":2}],[{\"n\":3,\"o\":4},{\"p\":5,\"q\":6}]]}}";
 
     private static final String XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<document>\n" +
@@ -68,18 +68,28 @@ public class JsonSaxAdapterTest {
             "	</f>\n" +
             "   <g/>\n" +
             "   <h>\n" +
-            "      <i>true</i>\n" +
-            "      <j>false</j>\n" +
+            "       <h>\n" +
+            "           <i>true</i>\n" +
+            "           <j>false</j>\n" +
+            "       </h>\n" +
             "   </h>\n" +
             "   <k>\n" +
             "      <k>\n" +
-            "        <l>1</l>\n" +
-            "        <m>2</m>\n" +
+            "        <k>\n" +
+            "            <l>1</l>\n" +
+            "            <m>2</m>\n" +
+            "        </k>\n" +
             "      </k>\n" +
             "      <k>\n" +
-            "        <n>3</n>\n" +
-            "        <o>4</o>\n" +
-            "      </k>\n" +
+            "        <k>\n" +
+            "            <n>3</n>\n" +
+            "            <o>4</o>\n" +
+            "       </k>\n" +
+            "        <k>\n" +
+            "            <p>5</p>\n" +
+            "            <q>6</q>\n" +
+            "       </k>\n" +
+            "     </k>\n" +
             "   </k>\n" +
             "</document>\n";
 
@@ -110,17 +120,27 @@ public class JsonSaxAdapterTest {
             "	</f>\n" +
             "	<g type=\"null\" />\n" +
             "   <h type=\"array\">\n" +
-            "       <i type=\"boolean\">true</i>\n" +
-            "       <j type=\"boolean\">false</j>\n" +
+            "       <h>\n" +
+            "         <i type=\"boolean\">true</i>\n" +
+            "         <j type=\"boolean\">false</j>\n" +
+            "       </h>\n" +
             "   </h>\n" +
             "   <k type=\"array\">\n" +
             "      <k type=\"array\">\n" +
-            "        <l type=\"int\">1</l>\n" +
-            "        <m type=\"int\">2</m>\n" +
+            "         <k>\n" +
+            "            <l type=\"int\">1</l>\n" +
+            "            <m type=\"int\">2</m>\n" +
+            "        </k>\n" +
             "      </k>\n" +
             "      <k type=\"array\">\n" +
-            "        <n type=\"int\">3</n>\n" +
-            "        <o type=\"int\">4</o>\n" +
+            "        <k>\n" +
+            "            <n type=\"int\">3</n>\n" +
+            "            <o type=\"int\">4</o>\n" +
+            "        </k>\n" +
+            "        <k>\n" +
+            "            <p type=\"int\">5</p>\n" +
+            "            <q type=\"int\">6</q>\n" +
+            "       </k>\n" +
             "      </k>\n" +
             "   </k>\n" +
             "</document>";
@@ -140,7 +160,24 @@ public class JsonSaxAdapterTest {
     @Test
     public void testParseArray() throws Exception {
         String xml = convertToXml("[{\"name\":\"smith\"},{\"skill\":\"java\"}]", new JsonXmlReader(null, false, "elem"));
-        Diff diff = XMLUnit.compareXML("<elem><name>smith</name><skill>java</skill></elem>", xml);
+        Diff diff = XMLUnit.compareXML("<elem><elem><name>smith</name></elem><elem><skill>java</skill></elem></elem>", xml);
+        assertTrue(diff.toString(), diff.similar());
+    }
+
+    @Test
+    public void testParseArrayOfObjects() throws Exception {
+        String xml = convertToXml("{\"equipments\":[{\"type\":\"charger\",\"cost\":\"1$\"},{\"type\":\"battery\",\"cost\":\"2$\"}]}", new JsonXmlReader());
+        Diff diff = XMLUnit.compareXML("" +
+                "    <equipments>\n" +
+                "      <equipments>\n" +
+                "         <type>charger</type>\n" +
+                "         <cost>1$</cost>\n" +
+                "      </equipments>\n" +
+                "      <equipments>\n" +
+                "         <type>battery</type>\n" +
+                "         <cost>2$</cost>\n" +
+                "      </equipments>\n" +
+                "   </equipments>", xml);
         assertTrue(diff.toString(), diff.similar());
     }
 
@@ -161,7 +198,6 @@ public class JsonSaxAdapterTest {
     @Test
     public void testParseNamespace() throws Exception {
         String xml = convertToXml(JSON, new JsonXmlReader("http://javacrumbs.net/test"));
-        System.out.println(xml);
         String xmlWithNamespace = XML.replace("<document>", "<document xmlns=\"http://javacrumbs.net/test\">");
         Diff diff = XMLUnit.compareXML(xmlWithNamespace, xml);
         assertTrue(diff.toString(), diff.similar());
@@ -170,7 +206,6 @@ public class JsonSaxAdapterTest {
     @Test
     public void testParseNamespaceWithAttributes() throws Exception {
         String xml = convertToXml(JSON, new JsonXmlReader("http://javacrumbs.net/test", true));
-        System.out.println(xml);
         Diff diff = XMLUnit.compareXML(XML_WITH_TYPES, xml);
         assertTrue(diff.toString(), diff.similar());
     }
@@ -210,20 +245,58 @@ public class JsonSaxAdapterTest {
     @Test
     public void testArrayOfObjects() throws Exception {
         String xml = convertToXml("{\"root\":[{\"a\":1}, {\"b\":2}]}");
-        Diff diff = XMLUnit.compareXML("<root><a>1</a><b>2</b></root>", xml);
+        Diff diff = XMLUnit.compareXML("<root><root><a>1</a></root><root><b>2</b></root></root>", xml);
         assertTrue(diff.toString(), diff.similar());
     }
 
     @Test
     public void testArrayOfArraysOfObjects() throws Exception {
-        String xml = convertToXml("{\"root\":[[{\"a\":1}, {\"b\":2}],[{\"c\":3}, {\"d\":4}]]}");
-        Diff diff = XMLUnit.compareXML("<root><root><a>1</a><b>2</b></root><root><c>3</c><d>4</d></root></root>", xml);
+        String xml = convertToXml("{\"root\":[[{\"a\":1, \"e\":true}, {\"b\":2}],[{\"c\":3}, {\"d\":4}]]}");
+        Diff diff = XMLUnit.compareXML(
+                "<root>\n" +
+                "   <root>\n" +
+                "      <root>\n" +
+                "         <a>1</a>\n" +
+                "         <e>true</e>\n" +
+                "      </root>\n" +
+                "      <root>\n" +
+                "         <b>2</b>\n" +
+                "      </root>\n" +
+                "   </root>\n" +
+                "   <root>\n" +
+                "      <root>\n" +
+                "         <c>3</c>\n" +
+                "      </root>\n" +
+                "      <root>\n" +
+                "         <d>4</d>\n" +
+                "      </root>\n" +
+                "   </root>\n" +
+                "</root>", xml);
         assertTrue(diff.toString(), diff.similar());
     }
     @Test
     public void testArrayOfArraysOfObjectsInRoot() throws Exception {
-        String xml = convertToXml("[[{\"a\":1}, {\"b\":2}],[{\"c\":3}, {\"d\":4}]]", new JsonXmlReader("", false, "root"));
-        Diff diff = XMLUnit.compareXML("<root><root><a>1</a><b>2</b></root><root><c>3</c><d>4</d></root></root>", xml);
+        String xml = convertToXml("[[{\"a\":1, \"e\":true}, {\"b\":2}],[{\"c\":3}, {\"d\":4}]]", new JsonXmlReader("", false, "root"));
+        Diff diff = XMLUnit.compareXML(
+                "<root>\n" +
+                "   <root>\n" +
+                "      <root>\n" +
+                "         <a>1</a>\n" +
+                "         <e>true</e>\n" +
+                "      </root>\n" +
+                "      <root>\n" +
+                "         <b>2</b>\n" +
+                "      </root>\n" +
+                "   </root>\n" +
+                "   <root>\n" +
+                "      <root>\n" +
+                "         <c>3</c>\n" +
+                "      </root>\n" +
+                "      <root>\n" +
+                "         <d>4</d>\n" +
+                "      </root>\n" +
+                "   </root>\n" +
+                "</root>", xml);
         assertTrue(diff.toString(), diff.similar());
     }
 
@@ -245,7 +318,14 @@ public class JsonSaxAdapterTest {
     @Test
     public void testArrayOfComplexObjects() throws Exception {
         String xml = convertToXml("{\"root\":[{\"a\":{\"a1\":1}}, {\"b\":2}]}");
-        Diff diff = XMLUnit.compareXML("<root><a><a1>1</a1></a><b>2</b></root>", xml);
+        Diff diff = XMLUnit.compareXML("<root><root><a><a1>1</a1></a></root><root><b>2</b></root></root>", xml);
+        assertTrue(diff.toString(), diff.similar());
+    }
+
+    @Test
+    public void testXmlEscaping() throws Exception {
+        String xml = convertToXml("{\"root\":\"<a>\"}");
+        Diff diff = XMLUnit.compareXML("<root>&lt;a&gt;</root>", xml);
         assertTrue(diff.toString(), diff.similar());
     }
 

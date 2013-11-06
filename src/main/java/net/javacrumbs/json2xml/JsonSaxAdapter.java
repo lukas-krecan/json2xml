@@ -224,24 +224,18 @@ public class JsonSaxAdapter {
      */
     private void parseElement(final String elementName, final boolean inArray) throws Exception {
         JsonToken currentToken = jsonParser.getCurrentToken();
+        if (inArray) {
+            startElement(elementName);
+        }
         if (START_OBJECT.equals(currentToken)) {
             parseObject();
         } else if (START_ARRAY.equals(currentToken)) {
-            if (inArray) {
-                startElement(elementName);
-                parseArray(elementName);
-                endElement(elementName);
-            } else {
-                parseArray(elementName);
-            }
+            parseArray(elementName);
         } else if (currentToken.isScalarValue()) {
-            if (inArray) {
-                startElement(elementName);
-                parseValue();
-                endElement(elementName);
-            } else {
-                parseValue();
-            }
+            parseValue();
+        }
+        if (inArray) {
+            endElement(elementName);
         }
     }
 

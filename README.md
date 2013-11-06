@@ -16,10 +16,23 @@ Json2Xml converts the following JSON
              "d":"text"
           },
           "e":[1, 2, 3],
-          "f":[[1, 2, 3],[4, 5, 6]],
+          "f":[[1, 2, 3], [4, 5,6]],
           "g":null,
-          "h":[{"i":true,"j":false}],
-          "k":[[{"l":1,"m":2}],[{"n":3,"o":4}]]
+          "h":[
+             {
+                "i":true,
+                "j":false
+             }
+          ],
+          "k":[
+             [
+                {"l":1, "m":2}
+             ],
+             [
+                {"n":3, "o":4},
+                {"p":5, "q":6}
+             ]
+          ]
        }
     }
 	
@@ -51,17 +64,27 @@ to
        </f>
        <g />
        <h>
-          <i>true</i>
-          <j>false</j>
+          <h>
+             <i>true</i>
+             <j>false</j>
+          </h>
        </h>
        <k>
           <k>
-             <l>1</l>
-             <m>2</m>
+             <k>
+                <l>1</l>
+                <m>2</m>
+             </k>
           </k>
           <k>
-             <n>3</n>
-             <o>4</o>
+             <k>
+                <n>3</n>
+                <o>4</o>
+             </k>
+             <k>
+                <p>5</p>
+                <q>6</q>
+             </k>
           </k>
        </k>
     </document>
@@ -97,30 +120,54 @@ constructor argument. Then you will get the type information in XML attributes l
 
 	<?xml version="1.0" encoding="UTF-8"?>
 	<document xmlns="http://javacrumbs.net/test">
-		<a type="int">1</a>
-		<b type="int">2</b>
-		<c>
-			<d type="string">text</d>
-		</c>
-		<e type="array">
-			<e type="int">1</e>
-			<e type="int">2</e>
-			<e type="int">3</e>
-		</e>
-		<f type="array">
-			<f type="array">
-				<f type="int">1</f>
-				<f type="int">2</f>
-				<f type="int">3</f>
-			</f>
-			<f type="array">
-				<f type="int">4</f>
-				<f type="int">5</f>
-				<f type="int">6</f>
-			</f>
-		</f>
-		<g type="null" />
-	</document>
+       <a type="int">1</a>
+       <b type="int">2</b>
+       <c>
+          <d type="string">text</d>
+       </c>
+       <e type="array">
+          <e type="int">1</e>
+          <e type="int">2</e>
+          <e type="int">3</e>
+       </e>
+       <f type="array">
+          <f type="array">
+             <f type="int">1</f>
+             <f type="int">2</f>
+             <f type="int">3</f>
+          </f>
+          <f type="array">
+             <f type="int">4</f>
+             <f type="int">5</f>
+             <f type="int">6</f>
+          </f>
+       </f>
+       <g type="null" />
+       <h type="array">
+          <h>
+             <i type="boolean">true</i>
+             <j type="boolean">false</j>
+          </h>
+       </h>
+       <k type="array">
+          <k type="array">
+             <k>
+                <l type="int">1</l>
+                <m type="int">2</m>
+             </k>
+          </k>
+          <k type="array">
+             <k>
+                <n type="int">3</n>
+                <o type="int">4</o>
+             </k>
+             <k>
+                <p type="int">5</p>
+                <q type="int">6</q>
+             </k>
+          </k>
+       </k>
+    </document>
 	
 Atrificial root
 ---------------
@@ -158,6 +205,9 @@ In older version it behaved erratically. Version 4 fixes the behavior, but is ba
 Also note that version 2.0 and higher require Jackson 2.x If you need new features in Jackson 1.x, just file a ticket and
 I will backport the changes.
 
+*Please do not use version 4.0. It has broken handling of arrays. Since it has been in the wild for two days only, I do not assume
+ anyone is using it.*
+
 Maven
 -----
 To use with Maven, add this dependency
@@ -165,7 +215,7 @@ To use with Maven, add this dependency
 	<dependency>
 		<groupId>net.javacrumbs</groupId>
 		<artifactId>json-xml</artifactId>
-		<version>4.0</version><!-- for Jackson >= 2.0 -->
+		<version>4.1</version><!-- for Jackson >= 2.0 -->
 		<!--<version>1.3</version>--><!-- older version for Jackson < 2.0 -->
 	</dependency>
 
