@@ -15,10 +15,10 @@
  */
 package net.javacrumbs.json2xml;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -27,12 +27,12 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import java.io.IOException;
 
-import static com.fasterxml.jackson.core.JsonToken.END_ARRAY;
-import static com.fasterxml.jackson.core.JsonToken.END_OBJECT;
-import static com.fasterxml.jackson.core.JsonToken.FIELD_NAME;
-import static com.fasterxml.jackson.core.JsonToken.START_ARRAY;
-import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
-import static com.fasterxml.jackson.core.JsonToken.VALUE_NULL;
+import static org.codehaus.jackson.JsonToken.END_ARRAY;
+import static org.codehaus.jackson.JsonToken.END_OBJECT;
+import static org.codehaus.jackson.JsonToken.FIELD_NAME;
+import static org.codehaus.jackson.JsonToken.START_ARRAY;
+import static org.codehaus.jackson.JsonToken.START_OBJECT;
+import static org.codehaus.jackson.JsonToken.VALUE_NULL;
 
 /**
  * Converts JSON to SAX events. It can be used either directly
@@ -147,7 +147,7 @@ public class JsonSaxAdapter {
 
     private static JsonParser parseJson(final String json) {
         try {
-            return JSON_FACTORY.createParser(json);
+            return JSON_FACTORY.createJsonParser(json);
         } catch (Exception e) {
             throw new ParserException("Parsing error", e);
         }

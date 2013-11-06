@@ -15,8 +15,8 @@
  */
 package net.javacrumbs.json2xml;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParser;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
@@ -148,7 +148,7 @@ public class JsonXmlReader implements XMLReader {
 
 
     public void parse(InputSource input) throws IOException, SAXException {
-        JsonParser jsonParser = new JsonFactory().createParser(input.getCharacterStream());
+        JsonParser jsonParser = new JsonFactory().createJsonParser(input.getCharacterStream());
         new JsonSaxAdapter(jsonParser, contentHandler, namespaceUri, addTypeAttributes, artificialRootName, elementNameConverter).parse();
     }
 
