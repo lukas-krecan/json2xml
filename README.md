@@ -209,7 +209,7 @@ an `ElementNameConverter` can be used. For example to convert '@' to '_' create 
 
 Compatibility notes:
 --------------------
-Version 4.0 handles arrays differently than the previous version. The change is in handling of arrays of JSON objects.
+Version 4.1 handles arrays differently than the previous version. The change is in handling of arrays of JSON objects.
 In older version it behaved erratically. Version 4 fixes the behavior, but is backwards-incompatible.
 
 Also note that version 2.0 and higher require Jackson 2.x If you need new features in Jackson 1.x, just file a ticket and
