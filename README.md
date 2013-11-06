@@ -8,7 +8,11 @@ There is already [Jettison] (http://jettison.codehaus.org/) project that has sim
 
 Json2Xml converts the following JSON 
 
-	{
+<table>
+  <tr>
+    <td valign="top">
+     <pre>
+       {
        "document":{
           "a":1,
           "b":2,
@@ -35,59 +39,65 @@ Json2Xml converts the following JSON
           ]
        }
     }
-	
-to
+     </pre>
+    </td>
+    <td>
+     <pre>
+    &lt;document&gt;
+       &lt;a&gt;1&lt;/a&gt;
+       &lt;b&gt;2&lt;/b&gt;
+       &lt;c&gt;
+          &lt;d&gt;text&lt;/d&gt;
+       &lt;/c&gt;
+       &lt;e&gt;
+          &lt;e&gt;1&lt;/e&gt;
+          &lt;e&gt;2&lt;/e&gt;
+          &lt;e&gt;3&lt;/e&gt;
+       &lt;/e&gt;
+       &lt;f&gt;
+          &lt;f&gt;
+             &lt;f&gt;1&lt;/f&gt;
+             &lt;f&gt;2&lt;/f&gt;
+             &lt;f&gt;3&lt;/f&gt;
+          &lt;/f&gt;
+          &lt;f&gt;
+             &lt;f&gt;4&lt;/f&gt;
+             &lt;f&gt;5&lt;/f&gt;
+             &lt;f&gt;6&lt;/f&gt;
+          &lt;/f&gt;
+       &lt;/f&gt;
+       &lt;g /&gt;
+       &lt;h&gt;
+          &lt;h&gt;
+             &lt;i&gt;true&lt;/i&gt;
+             &lt;j&gt;false&lt;/j&gt;
+          &lt;/h&gt;
+       &lt;/h&gt;
+       &lt;k&gt;
+          &lt;k&gt;
+             &lt;k&gt;
+                &lt;l&gt;1&lt;/l&gt;
+                &lt;m&gt;2&lt;/m&gt;
+             &lt;/k&gt;
+          &lt;/k&gt;
+          &lt;k&gt;
+             &lt;k&gt;
+                &lt;n&gt;3&lt;/n&gt;
+                &lt;o&gt;4&lt;/o&gt;
+             &lt;/k&gt;
+             &lt;k&gt;
+                &lt;p&gt;5&lt;/p&gt;
+                &lt;q&gt;6&lt;/q&gt;
+             &lt;/k&gt;
+          &lt;/k&gt;
+       &lt;/k&gt;
+    &lt;/document&gt;
+     </pre>
+    </td>
+  </tr>
+</table>
 
-	<?xml version="1.0" encoding="UTF-8"?>
-    <document>
-       <a>1</a>
-       <b>2</b>
-       <c>
-          <d>text</d>
-       </c>
-       <e>
-          <e>1</e>
-          <e>2</e>
-          <e>3</e>
-       </e>
-       <f>
-          <f>
-             <f>1</f>
-             <f>2</f>
-             <f>3</f>
-          </f>
-          <f>
-             <f>4</f>
-             <f>5</f>
-             <f>6</f>
-          </f>
-       </f>
-       <g />
-       <h>
-          <h>
-             <i>true</i>
-             <j>false</j>
-          </h>
-       </h>
-       <k>
-          <k>
-             <k>
-                <l>1</l>
-                <m>2</m>
-             </k>
-          </k>
-          <k>
-             <k>
-                <n>3</n>
-                <o>4</o>
-             </k>
-             <k>
-                <p>5</p>
-                <q>6</q>
-             </k>
-          </k>
-       </k>
-    </document>
+
 	
 Usage
 -------------
