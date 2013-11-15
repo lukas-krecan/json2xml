@@ -179,7 +179,7 @@ constructor argument. Then you will get the type information in XML attributes l
        </k>
     </document>
 	
-Atrificial root
+Artificial root
 ---------------
 XML support only one root element but JSON documents may have multiple roots. To overcome this mismatch,
 you can specify `artificialRootName` which will generate artificial XML root with given name.
