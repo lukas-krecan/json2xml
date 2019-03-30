@@ -4,7 +4,7 @@ Java Json to XML conversion
 Json2Xml project is a simple implementation of JSON to XML conversion. Under the hood it uses [Jackson](http://jackson.codehaus.org/) [pull parser](http://wiki.fasterxml.com/JacksonInFiveMinutes#Streaming_API_Example) and generates
 XML SAX events. This way the conversion has low memory consumption and is pretty fast.
 
-There is already [Jettison] (http://jettison.codehaus.org/) project that has similar objective, unfortunately it can not handle JSON arrays properly.
+There is already [Jettison](http://jettison.codehaus.org/) project that has similar objective, unfortunately it can not handle JSON arrays properly.
 
 Json2Xml converts the following JSON 
 
