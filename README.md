@@ -1,4 +1,4 @@
-Java Json to XML conversion
+Java Json to XML conversion [![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt) [![Build Status](https://travis-ci.org/lukas-krecan/json2xml.png?branch=master)](https://travis-ci.org/lukas-krecan/json2xml) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs/json-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs/json-xml)
 ============================
 
 Json2Xml project is a simple implementation of JSON to XML conversion. Under the hood it uses [Jackson](http://jackson.codehaus.org/) [pull parser](http://wiki.fasterxml.com/JacksonInFiveMinutes#Streaming_API_Example) and generates
