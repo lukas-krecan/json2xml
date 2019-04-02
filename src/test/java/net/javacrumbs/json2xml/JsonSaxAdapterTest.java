@@ -32,6 +32,10 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -329,6 +333,13 @@ public class JsonSaxAdapterTest {
         assertTrue(diff.toString(), diff.similar());
     }
 
+    @Test
+    public void testBackAndForth() throws Exception {
+        Node node = convertToDom(JSON, null, true, "root");
+        String json = convertToJson(node);
+        assertJsonEquals(JSON, convertToJson(convertToDom(JSON, null, true, "root")));
+    }
+    
     public static String convertToXml(final String json) throws Exception {
         return convertToXml(json, new JsonXmlReader());
     }
@@ -349,5 +360,13 @@ public class JsonSaxAdapterTest {
         DOMResult result = new DOMResult();
         transformer.transform(new SAXSource(new JsonXmlReader(namespace, addTypeAttributes, artificialRootName), source), result);
         return result.getNode();
+    }
+    
+    public static String convertToJson(final Node node) throws Exception {
+        StringWriter writer = new StringWriter();
+        SAXResult result = new SAXResult(new XmlToJsonHandler(writer));
+        Transformer xformer = TransformerFactory.newInstance().newTransformer();
+        xformer.transform(new DOMSource(node), result);
+        return writer.toString();
     }
 }
