@@ -118,7 +118,7 @@ public class JsonSaxAdapter {
      * @param contentHandler target of SAX events
      * @param namespaceUri namespace of the generated XML
      * @param addTypeAttributes adds type information as attributes
-     * @param artificialRootName if set, an artificial root is generated so JSON documents with more roots can be handeled.
+     * @param artificialRootName if set, an artificial root is generated so JSON documents with more roots can be handled.
      */
     public JsonSaxAdapter(final JsonParser jsonParser, final ContentHandler contentHandler, final String namespaceUri,
                           final boolean addTypeAttributes, final String artificialRootName) {
@@ -131,7 +131,7 @@ public class JsonSaxAdapter {
      * @param contentHandler target of SAX events
      * @param namespaceUri namespace of the generated XML
      * @param addTypeAttributes adds type information as attributes
-     * @param artificialRootName if set, an artificial root is generated so JSON documents with more roots can be handeled.
+     * @param artificialRootName if set, an artificial root is generated so JSON documents with more roots can be handled.
      */
     public JsonSaxAdapter(final JsonParser jsonParser, final ContentHandler contentHandler, final String namespaceUri,
                           final boolean addTypeAttributes, final String artificialRootName, final ElementNameConverter nameConverter) {

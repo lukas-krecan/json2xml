@@ -75,7 +75,7 @@ public class JsonXmlReader implements XMLReader {
      * Creates JsonXmlReader
      * @param namespaceUri namespace uri of the resulting XML.
      * @param addTypeAttributes if true adds attributes with type info
-     * @param artificialRootName if set, an artificial root is generated so JSON documents with more roots can be handeled.
+     * @param artificialRootName if set, an artificial root is generated so JSON documents with more roots can be handled.
      */
     public JsonXmlReader(String namespaceUri, boolean addTypeAttributes, String artificialRootName) {
     	this(namespaceUri, addTypeAttributes, artificialRootName, null);
