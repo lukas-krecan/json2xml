@@ -194,7 +194,16 @@ to
       <b>2</b>
     </artificialRoot>
 
+Converting XML DOM back to JSON
+---------------
+If you have created an XML DOM node from JSON content with `addTypeAttributes` then you can convert it back to JSON using `net.javacrumbs.json2xml.JsonXmlHelper`.
 
+	// convert JSON to DOM Node
+	Node node = JsonXmlHelper.convertToDom(...);
+	// do whatever on the DOM Node (eventually modify using XPATH it while respecting the type attributes)
+	String json = JsonXmlHelper.convertToJson(node);
+
+This method has proven very useful to work on huge JSON document using XPATH and converting it back to JSON afterward.
 
 Name transformation
 -------------------
