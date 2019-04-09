@@ -234,7 +234,7 @@ To use with Maven, add this dependency
 	<dependency>
 		<groupId>net.javacrumbs</groupId>
 		<artifactId>json-xml</artifactId>
-		<version>4.1</version><!-- for Jackson >= 2.0 -->
+		<version>4.2</version><!-- for Jackson >= 2.0 -->
 		<!--<version>1.3</version>--><!-- older version for Jackson < 2.0 -->
 	</dependency>
 
