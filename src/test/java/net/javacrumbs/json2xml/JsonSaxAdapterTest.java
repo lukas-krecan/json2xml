@@ -32,9 +32,7 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
-import java.io.StringWriter;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXResult;
+import static net.javacrumbs.json2xml.JsonXmlHelper.convertToJson;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
 import static org.junit.Assert.assertTrue;
@@ -335,15 +333,14 @@ public class JsonSaxAdapterTest {
 
     @Test
     public void testBackAndForth() throws Exception {
-        Node node = convertToDom(JSON, null, true, "root");
-        String json = convertToJson(node);
-        assertJsonEquals(JSON, convertToJson(convertToDom(JSON, null, true, "root")));
+        Node node = JsonXmlHelper.convertToDom(JSON, null, true, "root");
+        String convertedBackJSON = JsonXmlHelper.convertToJson(node);
+        assertJsonEquals(JSON, convertedBackJSON);
     }
     
     public static String convertToXml(final String json) throws Exception {
         return convertToXml(json, new JsonXmlReader());
     }
-
 
     public static String convertToXml(final String json, final JsonXmlReader reader) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -352,21 +349,5 @@ public class JsonSaxAdapterTest {
         Result result = new StreamResult(out);
         transformer.transform(new SAXSource(reader, source), result);
         return new String(out.toByteArray());
-    }
-
-    public static Node convertToDom(final String json, final String namespace, final boolean addTypeAttributes, final String artificialRootName) throws Exception {
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        InputSource source = new InputSource(new StringReader(json));
-        DOMResult result = new DOMResult();
-        transformer.transform(new SAXSource(new JsonXmlReader(namespace, addTypeAttributes, artificialRootName), source), result);
-        return result.getNode();
-    }
-    
-    public static String convertToJson(final Node node) throws Exception {
-        StringWriter writer = new StringWriter();
-        SAXResult result = new SAXResult(new XmlToJsonHandler(writer));
-        Transformer xformer = TransformerFactory.newInstance().newTransformer();
-        xformer.transform(new DOMSource(node), result);
-        return writer.toString();
     }
 }
